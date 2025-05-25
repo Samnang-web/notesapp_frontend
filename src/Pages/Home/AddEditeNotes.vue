@@ -42,7 +42,7 @@ const title = ref('');
 const content = ref('');
 const noteStore = useNoteStore();
 
-// ✅ Fill inputs when editing
+// Fill inputs when editing
 watch(
   () => props.note,
   (newNote) => {
@@ -56,13 +56,13 @@ const handleSaveNote = async () => {
   if (!title.value.trim() || !content.value.trim()) return;
 
   if (props.note) {
-    // ✅ UPDATE
+    // UPDATE
     await noteStore.editNote(props.note.id, {
       title: title.value,
       content: content.value,
     });
   } else {
-    // ✅ CREATE
+    // CREATE
     await noteStore.addNote({
       title: title.value,
       content: content.value,
@@ -70,7 +70,7 @@ const handleSaveNote = async () => {
     });
   }
 
-  emit('close'); // ✅ Close modal after save
+  emit('close'); // 
 };
 </script>
 

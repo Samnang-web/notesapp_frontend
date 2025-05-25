@@ -1,21 +1,29 @@
 <template>
   <div
     class="border rounded p-4 bg-white hover:shadow-xl transition-all ease-in-out cursor-pointer"
-    @click="toggleExpanded"
+    @click="emit('toggle', note.id)"
   >
     <div class="flex items-center justify-between">
       <div>
         <h6 class="text-sm font-medium">{{ note.title }}</h6>
-        <span class="text-xs text-slate-500">Created: {{ formatDate(note.createdAt) }}</span>
+        <span class="text-xs text-slate-500"
+          >Created: {{ formatDate(note.createdAt) }}</span
+        >
       </div>
     </div>
 
     <p class="text-xs text-slate-600 mt-2">
-      {{ expanded ? note.content : note.content.slice(0, 60) + (note.content.length > 60 ? '...' : '') }}
+      {{
+        isExpanded
+          ? note.content
+          : note.content.slice(0, 60) + (note.content.length > 60 ? "..." : "")
+      }}
     </p>
 
     <div class="flex items-center justify-between mt-2">
-      <div class="text-xs text-slate-500">Last updated: {{ formatDate(note.updatedAt) }}</div>
+      <div class="text-xs text-slate-500">
+        Last updated: {{ formatDate(note.updatedAt) }}
+      </div>
       <div class="flex items-center gap-2">
         <Icon
           icon="mdi:edit"
@@ -37,33 +45,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { Icon } from '@iconify/vue';
-import type { Note } from '../../Types/Note';
+import { Icon } from "@iconify/vue";
+import type { Note } from "../../Types/Note";
 
-const props = defineProps<{ note: Note }>();
+const props = defineProps<{
+  note: Note;
+  isExpanded: boolean;
+}>();
 
-const expanded = ref(false);
-
-const formatDate = (isoDate: string | null | undefined): string => {
-  if (!isoDate) return 'N/A';
-  const date = new Date(isoDate);
-  return isNaN(date.getTime()) ? 'Invalid date' : date.toLocaleString();
-};
-
-const emit = defineEmits(['onEdit', 'onDelete']);
-
-function toggleExpanded() {
-  expanded.value = !expanded.value;
-}
+const emit = defineEmits(["onEdit", "onDelete", "toggle"]);
 
 function editNote() {
-  emit('onEdit', props.note);
+  emit("onEdit", props.note);
 }
 
 function deleteNote() {
-  if (confirm('Are you sure you want to delete this note?')) {
-    emit('onDelete', props.note.id);
+  if (confirm("Are you sure you want to delete this note?")) {
+    emit("onDelete", props.note.id);
   }
 }
+
+const formatDate = (isoDate: string | null | undefined): string => {
+  if (!isoDate || isoDate === "") return "N/A";
+  const date = new Date(isoDate);
+  return isNaN(date.getTime()) ? "Invalid date" : date.toLocaleString();
+};
 </script>
