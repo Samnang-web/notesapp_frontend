@@ -16,11 +16,11 @@
 
     <!-- Notes  -->
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      <NoteCard
+      <NotedCard
         v-for="note in filteredNotes"
         :key="note.id"
         :note="note"
-        :isExpanded="false"  
+        :isExpanded="false"
         @onEdit="() => handleEdit(note)"
         @onDelete="() => noteStore.removeNote(note.id)"
       />
@@ -61,20 +61,20 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue';
-import { Icon } from '@iconify/vue';
-import { useNoteStore } from '../../Stores/Note.store';
-import NotedCard from '../../components/Cards/NotedCard.vue';
-import Navbar from '../../components/Navbar.vue';
-import AddEditeNotes from './AddEditeNotes.vue';
-import type { Note } from '../../Types/Note';
-import { VueFinalModal } from 'vue-final-modal';
+import { ref, computed, onMounted } from "vue";
+import { Icon } from "@iconify/vue";
+import { useNoteStore } from "../../Stores/Note.store";
+import NotedCard from "../../components/Cards/NotedCard.vue";
+import Navbar from "../../components/Navbar.vue";
+import AddEditeNotes from "./AddEditeNotes.vue";
+import type { Note } from "../../Types/Note";
+import { VueFinalModal } from "vue-final-modal";
 
 const noteStore = useNoteStore();
-const searchQuery = ref('');
+const searchQuery = ref("");
 const isModalOpen = ref(false);
 const selectedNote = ref<Note | null>(null);
-const sortOption = ref<'latest' | 'oldest' | 'title'>('latest'); // sorting option
+const sortOption = ref<"latest" | "oldest" | "title">("latest"); // sorting option
 
 onMounted(() => {
   noteStore.fetchNotes();
@@ -86,21 +86,32 @@ const filteredNotes = computed(() => {
   // Filter by search
   if (searchQuery.value.trim()) {
     const q = searchQuery.value.toLowerCase();
-    result = result.filter((note) =>
-      note.title.toLowerCase().includes(q) ||
-      note.content.toLowerCase().includes(q)
+    result = result.filter(
+      (note) =>
+        note.title.toLowerCase().includes(q) ||
+        note.content.toLowerCase().includes(q)
     );
   }
 
   // Sort  option
   switch (sortOption.value) {
-    case 'latest':
-      result = result.slice().sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    case "latest":
+      result = result
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
       break;
-    case 'oldest':
-      result = result.slice().sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+    case "oldest":
+      result = result
+        .slice()
+        .sort(
+          (a, b) =>
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+        );
       break;
-    case 'title':
+    case "title":
       result = result.slice().sort((a, b) => a.title.localeCompare(b.title));
       break;
   }
@@ -119,11 +130,12 @@ function openAddModal() {
 }
 
 const overlayStyle = computed(() => ({
-  backgroundColor: isModalOpen.value ? 'rgba(0, 0, 0, 0.5)' : 'transparent',
+  backgroundColor: isModalOpen.value ? "rgba(0, 0, 0, 0.5)" : "transparent",
 }));
 
-const modalContentClasses = computed(() =>
-  `fixed bottom-0 left-0 right-0 bg-white rounded-t-lg p-5 max-h-[75vh] overflow-auto
+const modalContentClasses = computed(
+  () =>
+    `fixed bottom-0 left-0 right-0 bg-white rounded-t-lg p-5 max-h-[75vh] overflow-auto
    sm:rounded-md sm:mx-auto sm:mt-14 sm:max-w-[40%]`
 );
 </script>
