@@ -20,7 +20,6 @@
         v-for="note in filteredNotes"
         :key="note.id"
         :note="note"
-        :isExpanded="false"
         @onEdit="() => handleEdit(note)"
         @onDelete="() => noteStore.removeNote(note.id)"
       />
